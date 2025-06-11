@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>塔羅牌占卜 App</title>
+  <style>
+    body {
+      font-family: "Microsoft JhengHei", Arial, sans-serif;
+      background: #f3e9e0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    h1 {
+      margin-top: 40px;
+      color: #7c4d24;
+    }
+    .card {
+      background: #fff8e1;
+      border: 2px solid #d4b483;
+      border-radius: 16px;
+      box-shadow: 0 2px 10px #d4b48344;
+      padding: 32px 40px;
+      margin: 32px 0 16px 0;
+      min-width: 240px;
+      text-align: center;
+      transition: box-shadow 0.2s;
+    }
+    .card-title {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #a67c52;
+      margin-bottom: 12px;
+    }
+    .card-meaning {
+      font-size: 1.2rem;
+      color: #5d4037;
+    }
+    button {
+      background: #a67c52;
+      color: #fff;
+      border: none;
+      padding: 10px 32px;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #7c4d24;
+    }
+  </style>
+</head>
+<body>
+  <h1>塔羅牌占卜</h1>
+  <div class="card" id="tarotCard">
+    <div class="card-title">請點擊下方按鈕抽牌</div>
+    <div class="card-meaning"></div>
+  </div>
+  <button onclick="drawCard()">抽一張牌</button>
+
+  <script>
+    const tarotCards = [
+      { name: "愚者", meaning: "新開始、冒險、自由。" },
+      { name: "魔術師", meaning: "創造力、行動、資源運用。" },
+      { name: "女祭司", meaning: "直覺、潛意識、神祕。" },
+      { name: "女皇", meaning: "豐盛、母性、自然。" },
+      { name: "皇帝", meaning: "權威、結構、控制。" },
+      { name: "教皇", meaning: "傳統、信仰、教育。" },
+      { name: "戀人", meaning: "愛情、選擇、和諧。" },
+      { name: "戰車", meaning: "勝利、決心、意志力。" },
+      { name: "力量", meaning: "勇氣、耐心、自信。" },
+      { name: "隱者", meaning: "尋找、內省、智慧。" },
+      { name: "命運之輪", meaning: "變化、命運、週期。" },
+      { name: "正義", meaning: "公平、真理、因果。" },
+      { name: "倒吊人", meaning: "犧牲、等待、新觀點。" },
+      { name: "死神", meaning: "結束、轉變、重生。" },
+      { name: "節制", meaning: "平衡、耐心、調和。" },
+      { name: "惡魔", meaning: "束縛、慾望、誘惑。" },
+      { name: "塔", meaning: "突變、崩壞、啟示。" },
+      { name: "星星", meaning: "希望、靈感、療癒。" },
+      { name: "月亮", meaning: "幻象、潛意識、不安。" },
+      { name: "太陽", meaning: "成功、快樂、活力。" },
+      { name: "審判", meaning: "覺醒、反思、救贖。" },
+      { name: "世界", meaning: "完成、成就、圓滿。" }
+    ];
+
+    function drawCard() {
+      const idx = Math.floor(Math.random() * tarotCards.length);
+      const card = tarotCards[idx];
+      document.querySelector("#tarotCard .card-title").textContent = card.name;
+      document.querySelector("#tarotCard .card-meaning").textContent = card.meaning;
+    }
+  </script>
+</body>
+</html>
