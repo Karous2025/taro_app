@@ -1,119 +1,179 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
-
 <head>
-    <meta charset="UTF-8">
-    <title>塔羅牌占卜 App</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
-    <style>
-        body {
-            font-family: "Microsoft JhengHei", Arial, sans-serif;
-            background: #f3e9e0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-        }
-
-        h1 {
-            margin-top: 40px;
-            color: #7c4d24;
-        }
-
-        .card {
-            background: #fff8e1;
-            border: 2px solid #d4b483;
-            border-radius: 16px;
-            box-shadow: 0 2px 10px #d4b48344;
-            padding: 32px 40px;
-            margin: 32px 0 16px 0;
-            min-width: 240px;
-            text-align: center;
-            transition: box-shadow 0.2s;
-        }
-
-        .card-title {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #a67c52;
-            margin-bottom: 12px;
-        }
-
-        .card-meaning {
-            font-size: 1.2rem;
-            color: #5d4037;
-        }
-
-        button {
-            background: #a67c52;
-            color: #fff;
-            border: none;
-            padding: 10px 32px;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        button:hover {
-            background: #7c4d24;
-        }
-        
-    </style>
+  <meta charset="UTF-8">
+  <title>塔羅牌抽牌App（含牌義與牌圖）</title>
+  <style>
+    body { font-family: '微軟正黑體', Arial, sans-serif; background: #f7f0e8; margin: 0; padding: 0; }
+    .container { max-width: 520px; margin: 40px auto; padding: 30px; background: #fff8f0; border-radius: 12px; box-shadow: 0 2px 12px #d7c4aa; }
+    h1 { text-align: center; color: #8d633a; }
+    .btn-group { display: flex; justify-content: space-around; margin: 24px 0; }
+    button { padding: 10px 18px; border: none; border-radius: 6px; background: #c8a165; color: #fff; font-size: 16px; cursor: pointer; transition: background 0.2s; }
+    button:hover { background: #8d633a; }
+    .cards { display: flex; justify-content: center; gap: 18px; margin-top: 24px; flex-wrap: nowrap; }
+    .card { background: #fff; border: 1px solid #e0cba6; border-radius: 8px; padding: 12px 10px 10px 10px; min-width: 120px; text-align: center; color: #8d633a; font-weight: bold; box-shadow: 0 1px 4px #e0cba6; }
+    .card:hover{
+        transform: translateY(-3%);
+        transition: all 0.3s;
+    }
+    .card img { width: 90px; height: 150px; object-fit: cover; border-radius: 4px; margin-bottom: 7px; }
+    .meaning { font-size: 13px; color: #6b4a25; margin-top: 6px; font-weight: normal; }
+  </style>
 </head>
-
 <body>
-    <h1 class="fw-bold">塔羅牌占卜</h1>
-
-    <div class="card" id="tarotCard" style="width: 450px;">
-        <div class="card-image text-center" style="width: 350px;height: 600px;margin: 0 auto ;display: block;">
-            <img src="" alt="" class="" style="width:100%;height:100%;object-fit:cover;display:block;">
-        </div>
-        <div class="card-title">請點擊下方按鈕抽牌</div>
-        <div class="card-meaning"></div>
-
+  <div class="container">
+    <h1>塔羅牌抽牌App</h1>
+    <div class="btn-group">
+      <button onclick="drawCards(1)">抽1張</button>
+      <button onclick="drawCards(3)">抽3張</button>
+      <button onclick="drawCards(5)">抽5張</button>
     </div>
-    <button class="btn btn-outline-dark fs-1" onclick="drawCard()">抽一張牌</button>
+    <div class="cards" id="cards"></div>
+  </div>
+  <script>
+    // 只列出Major Arcana及權杖王牌做示範，可自行擴充全部78張
+    const tarotDeck = [
+      {
+        name: "愚者",
+        img: "https://upload.wikimedia.org/wikipedia/commons/9/90/RWS_Tarot_00_Fool.jpg",
+        meaning: "新開始、自由、冒險、信任宇宙。"
+      },
+      {
+        name: "魔術師",
+        img: "https://upload.wikimedia.org/wikipedia/commons/d/de/RWS_Tarot_01_Magician.jpg",
+        meaning: "掌握資源、主動創造、溝通、展現才華。"
+      },
+      {
+        name: "女祭司",
+        img: "https://upload.wikimedia.org/wikipedia/commons/8/88/RWS_Tarot_02_High_Priestess.jpg",
+        meaning: "直覺、潛意識、神祕、等待時機。"
+      },
+      {
+        name: "皇后",
+        img: "https://upload.wikimedia.org/wikipedia/commons/d/d2/RWS_Tarot_03_Empress.jpg",
+        meaning: "豐盛、滋養、成長、母性、創造力。"
+      },
+      {
+        name: "皇帝",
+        img: "https://upload.wikimedia.org/wikipedia/commons/c/c3/RWS_Tarot_04_Emperor.jpg",
+        meaning: "權威、結構、穩定、領導力。"
+      },
+      {
+        name: "教皇",
+        img: "https://upload.wikimedia.org/wikipedia/commons/8/8d/RWS_Tarot_05_Hierophant.jpg",
+        meaning: "傳統、規範、信仰、學習。"
+      },
+      {
+        name: "戀人",
+        img: "https://upload.wikimedia.org/wikipedia/commons/3/3a/TheLovers.jpg",
+        meaning: "選擇、愛情、關係、和諧。"
+      },
+      {
+        name: "戰車",
+        img: "https://upload.wikimedia.org/wikipedia/commons/3/3b/RWS_Tarot_07_Chariot.jpg",
+        meaning: "意志力、勝利、控制、前進。"
+      },
+      {
+        name: "力量",
+        img: "https://upload.wikimedia.org/wikipedia/commons/f/f5/RWS_Tarot_08_Strength.jpg",
+        meaning: "勇氣、內在力量、溫柔的堅持。"
+      },
+      {
+        name: "隱者",
+        img: "https://upload.wikimedia.org/wikipedia/commons/4/4d/RWS_Tarot_09_Hermit.jpg",
+        meaning: "內省、尋找真理、獨處、智慧。"
+      },
+      {
+        name: "命運之輪",
+        img: "https://upload.wikimedia.org/wikipedia/commons/3/3c/RWS_Tarot_10_Wheel_of_Fortune.jpg",
+        meaning: "命運轉變、週期、機會、不可預測。"
+      },
+      {
+        name: "正義",
+        img: "https://upload.wikimedia.org/wikipedia/commons/e/e0/RWS_Tarot_11_Justice.jpg",
+        meaning: "公平、因果、誠實、法律。"
+      },
+      {
+        name: "吊人",
+        img: "https://upload.wikimedia.org/wikipedia/commons/2/2b/RWS_Tarot_12_Hanged_Man.jpg",
+        meaning: "等待、犧牲、換個角度、放下。"
+      },
+      {
+        name: "死神",
+        img: "https://upload.wikimedia.org/wikipedia/commons/d/d7/RWS_Tarot_13_Death.jpg",
+        meaning: "結束、轉變、重生、放手。"
+      },
+      {
+        name: "節制",
+        img: "https://upload.wikimedia.org/wikipedia/commons/f/f8/RWS_Tarot_14_Temperance.jpg",
+        meaning: "平衡、調和、耐心、健康。"
+      },
+      {
+        name: "惡魔",
+        img: "https://upload.wikimedia.org/wikipedia/commons/5/55/RWS_Tarot_15_Devil.jpg",
+        meaning: "束縛、誘惑、成癮、陰影。"
+      },
+      {
+        name: "高塔",
+        img: "https://upload.wikimedia.org/wikipedia/commons/5/53/RWS_Tarot_16_Tower.jpg",
+        meaning: "突變、崩壞、覺醒、衝擊。"
+      },
+      {
+        name: "星星",
+        img: "https://upload.wikimedia.org/wikipedia/commons/d/db/RWS_Tarot_17_Star.jpg",
+        meaning: "希望、療癒、靈感、信心。"
+      },
+      {
+        name: "月亮",
+        img: "https://upload.wikimedia.org/wikipedia/commons/7/7f/RWS_Tarot_18_Moon.jpg",
+        meaning: "迷惘、潛意識、幻象、不安。"
+      },
+      {
+        name: "太陽",
+        img: "https://upload.wikimedia.org/wikipedia/commons/1/17/RWS_Tarot_19_Sun.jpg",
+        meaning: "成功、快樂、光明、成長。"
+      },
+      {
+        name: "審判",
+        img: "https://upload.wikimedia.org/wikipedia/commons/d/dd/RWS_Tarot_20_Judgement.jpg",
+        meaning: "覺醒、審視、重生、釋懷。"
+      },
+      {
+        name: "世界",
+        img: "https://upload.wikimedia.org/wikipedia/commons/f/ff/RWS_Tarot_21_World.jpg",
+        meaning: "圓滿、完成、統合、成就。"
+      },
+      {
+        name: "權杖王牌",
+        img: "https://upload.wikimedia.org/wikipedia/commons/1/11/Wands01.jpg",
+        meaning: "新計畫、熱情、創意、行動力。"
+      }
+      // ...可依需求繼續擴充全部牌組
+    ];
 
-    <script>
-        const tarotCards = [
-            { name: "愚者", meaning: "新開始、冒險、自由。" , img: "images/the fool.jpg"},
-            { name: "魔術師", meaning: "創造力、行動、資源運用。" , img: "images/the magician.jpg"},
-            { name: "女祭司", meaning: "直覺、潛意識、神祕。" , img: "images/the high priestess.jpg"},
-            { name: "女皇", meaning: "豐盛、母性、自然。" , img: "images/the empress.jpg"},
-            { name: "皇帝", meaning: "權威、結構、控制。" , img: "images/the emperor.jpg"},
-            { name: "教皇", meaning: "傳統、信仰、教育。" , img: "images/the hierophant.jpg"},
-            { name: "戀人", meaning: "愛情、選擇、和諧。" , img: "images/the lovers.jpg"},
-            { name: "戰車", meaning: "勝利、決心、意志力。", img: "images/the chariot.jpg"},
-            { name: "力量", meaning: "勇氣、耐心、自信。" , img: "images/strength.jpg"},
-            { name: "隱者", meaning: "尋找、內省、智慧。" , img: "images/the hermit.jpg"},
-            { name: "命運之輪", meaning: "變化、命運、週期。" , img: "images/wheel of fortune.jpg"},
-            { name: "正義", meaning: "公平、真理、因果。" , img: "images/justice.jpg"},
-            { name: "倒吊人", meaning: "犧牲、等待、新觀點。" , img: "images/the hanged man.jpg"},
-            { name: "死神", meaning: "結束、轉變、重生。" , img: "images/death.jpg"},
-            { name: "節制", meaning: "平衡、耐心、調和。" , img: "images/temperance.jpg"},
-            { name: "惡魔", meaning: "束縛、慾望、誘惑。" , img: "images/the devil.jpg"},
-            { name: "塔", meaning: "突變、崩壞、啟示。" , img: "images/the tower.jpg"},
-            { name: "星星", meaning: "希望、靈感、療癒。" , img: "images/the star.jpg"},
-            { name: "月亮", meaning: "幻象、潛意識、不安。" , img: "images/the moon.jpg"},
-            { name: "太陽", meaning: "成功、快樂、活力。" , img: "images/the sun.jpg"},
-            { name: "審判", meaning: "覺醒、反思、救贖。" , img: "images/judgement.jpg"},
-            { name: "世界", meaning: "完成、成就、圓滿。" , img: "images/the world.jpg"}
-        ];
-        document.querySelector("#tarotCard .card-image").style.display = "none";
-        function drawCard() {
-            const idx = Math.floor(Math.random() * tarotCards.length);
-            const card = tarotCards[idx];
-            document.querySelector("#tarotCard .card-title").textContent = card.name;
-            document.querySelector("#tarotCard .card-meaning").textContent = card.meaning;
-            document.querySelector("#tarotCard .card-image").style.display = "block";
-            document.querySelector("#tarotCard .card-image img").src = card.img;
-
-        }
-    </script>
+    function drawCards(count) {
+      // 洗牌
+      const deck = [...tarotDeck];
+      for (let i = deck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [deck[i], deck[j]] = [deck[j], deck[i]];
+      }
+      // 抽牌
+      const drawn = deck.slice(0, count);
+      // 顯示
+      const cardsDiv = document.getElementById('cards');
+      cardsDiv.innerHTML = '';
+      drawn.forEach(card => {
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.innerHTML = `
+          <img src="${card.img}" alt="${card.name}">
+          <div>${card.name}</div>
+          <div class="meaning">${card.meaning}</div>
+        `;
+        cardsDiv.appendChild(div);
+      });
+    }
+  </script>
 </body>
-
 </html>
